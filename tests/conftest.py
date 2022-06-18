@@ -5,7 +5,7 @@ from httpx import AsyncClient
 from app.__main__ import app
 
 
-@pytest_asyncio.fixture()
+@pytest_asyncio.fixture
 @pytest.mark.asyncio
 async def client():
     async with AsyncClient(

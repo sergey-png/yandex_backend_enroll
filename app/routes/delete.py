@@ -1,4 +1,5 @@
 import logging
+
 from typing import Dict
 
 from fastapi import APIRouter
@@ -10,10 +11,13 @@ router = APIRouter(
     tags=['Delete'],
     responses={
         200: {'description': 'Success'},
+        400: {'description': 'Validation Failed'},
+        404: {'description': 'Item not found'},
     },
 )
 
 
-@router.delete('/{id}')
-async def delete(item_id: int) -> Dict[str, int]:
+@router.delete('/{item_id}')
+async def delete(item_id: str) -> Dict[str, str]:
+    logger.info('DELETE %s', item_id)
     return {'id': item_id}

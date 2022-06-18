@@ -47,7 +47,7 @@ class ShopUnitImportSchema(BaseModel):
 
     @validator('price', always=True)
     def validate_price(
-        cls, value: Optional[int], values: dict[str, Any]
+        cls, value: Optional[int]
     ) -> Optional[int]:  # TODO write new validator
         return value
 
@@ -58,7 +58,6 @@ class ShopUnitImportRequestSchema(BaseModel):
 
     @validator('updateDate', always=True)
     def validate_date(cls, value: str) -> Optional[str]:
-        print(f'Validating date: {value}')
         logger.info('Validating date: %s', value)
         try:
             dt_str = datetime.fromisoformat(value.replace('Z', '+00:00'))
@@ -67,4 +66,4 @@ class ShopUnitImportRequestSchema(BaseModel):
             return res_value
         except (ValueError, TypeError):
             logger.info('Error with validating: %s', value)
-            return ValueError('Invalid date format')
+            raise ValueError('Invalid date format')

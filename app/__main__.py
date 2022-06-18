@@ -17,7 +17,7 @@ async def validation_exception_handler(_, exc) -> JSONResponse:
     print(exc)
     return JSONResponse(
         status_code=400,
-        content={},
+        content={}
     )
 
 

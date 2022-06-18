@@ -1,4 +1,4 @@
-import datetime as dt
+from datetime import datetime
 
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
@@ -17,13 +17,15 @@ class BaseModel(Base):  # type: ignore
         autoincrement=True,
     )
     created_at = sa.Column(
-        sa.DateTime, nullable=False, default=dt.datetime.now
+        sa.DateTime,
+        nullable=False,
+        default=datetime.now,
     )
     updated_at = sa.Column(
         sa.DateTime,
         nullable=False,
-        default=dt.datetime.now,
-        onupdate=dt.datetime.now,
+        default=datetime.now,
+        onupdate=datetime.now,
     )
 
     def __repr__(self) -> str:
