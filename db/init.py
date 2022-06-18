@@ -7,7 +7,9 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from db.models import Base
 
-engine = sa.create_engine('sqlite:///data.db')
+engine = sa.create_engine('postgresql+psycopg2://postgres:9903@localhost:5432/postgres')
+# engine = sa.create_engine('sqlite:///data_test.db')
+
 Session = scoped_session(sessionmaker(bind=engine))
 
 

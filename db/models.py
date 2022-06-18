@@ -37,11 +37,12 @@ class Item(BaseModel):
     name = sa.Column(sa.String, nullable=False)
     date = sa.Column(sa.String, nullable=False)
     type = sa.Column(sa.String, nullable=False)
-    parentId = sa.Column(sa.String, nullable=True)
+    parentId = sa.Column(sa.ForeignKey('item.id'), nullable=True)
     price = sa.Column(sa.Integer, nullable=True)
 
     children = sa.orm.relationship(
         'Item',
         backref=sa.orm.backref('parent', remote_side=[id]),
-        cascade='all, delete',
+        cascade='all, delete-orphan',
+        passive_deletes=True,
     )

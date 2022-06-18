@@ -9,10 +9,12 @@ from app.routes.imports import router
 app = FastAPI()
 app.include_router(router)
 app.include_router(delete_router)
+app.add_exception_handler(RequestValidationError, JSONResponse)
 
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(_, exc) -> JSONResponse:
+    print(exc)
     return JSONResponse(
         status_code=400,
         content={},

@@ -1,4 +1,4 @@
-CODE = project db
+CODE = app db
 CODE_FORMAT = $(CODE) tests
 
 VENV = .venv

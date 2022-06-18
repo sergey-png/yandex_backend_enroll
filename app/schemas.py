@@ -1,7 +1,11 @@
+import logging
+from datetime import datetime
 from enum import Enum, unique
 from typing import Any, Optional
 
 from pydantic import BaseModel, validator
+
+logger = logging.getLogger(__name__)
 
 
 @unique
@@ -44,7 +48,7 @@ class ShopUnitImportSchema(BaseModel):
     @validator('price', always=True)
     def validate_price(
         cls, value: Optional[int], values: dict[str, Any]
-    ) -> Optional[int]:  # TODO
+    ) -> Optional[int]:  # TODO write new validator
         return value
 
 
@@ -52,6 +56,15 @@ class ShopUnitImportRequestSchema(BaseModel):
     items: list[ShopUnitImportSchema]
     updateDate: str
 
-    @validator('updateDate')
-    def dvalidator_date(cls, value: str) -> str:  # TODO
-        return value
+    @validator('updateDate', always=True)
+    def validate_date(cls, value: str) -> Optional[str]:
+        print(f'Validating date: {value}')
+        logger.info('Validating date: %s', value)
+        try:
+            dt_str = datetime.fromisoformat(value.replace('Z', '+00:00'))
+            res_value = dt_str.isoformat().replace('+00:00', '.000Z')
+            logger.info('No errors with validating: %s', res_value)
+            return res_value
+        except (ValueError, TypeError):
+            logger.info('Error with validating: %s', value)
+            return ValueError('Invalid date format')
