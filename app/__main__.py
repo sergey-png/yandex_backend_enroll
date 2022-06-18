@@ -1,3 +1,5 @@
+from typing import Any
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
@@ -13,12 +15,9 @@ app.add_exception_handler(RequestValidationError, JSONResponse)
 
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(_, exc) -> JSONResponse:
+async def validation_exception_handler(_: Any, exc: str) -> JSONResponse:
     print(exc)
-    return JSONResponse(
-        status_code=400,
-        content={}
-    )
+    return JSONResponse(status_code=400, content={})
 
 
 if __name__ == '__main__':

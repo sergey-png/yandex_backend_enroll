@@ -1,4 +1,5 @@
 import logging
+from typing import Any
 
 from db.init import create_session
 from db.models import Item
@@ -6,7 +7,7 @@ from db.models import Item
 logger = logging.getLogger(__name__)
 
 
-def create_element(**data):
+def create_element(**data: Any) -> bool:
     logger.info('*START*')
     with create_session() as session:
         logger.info('Data received: %s', data)
@@ -19,3 +20,4 @@ def create_element(**data):
         else:
             logger.info('Item with id %s does not exist', item.id)
             session.add(item)
+        return True

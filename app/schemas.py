@@ -64,6 +64,6 @@ class ShopUnitImportRequestSchema(BaseModel):
             res_value = dt_str.isoformat().replace('+00:00', '.000Z')
             logger.info('No errors with validating: %s', res_value)
             return res_value
-        except (ValueError, TypeError):
+        except (ValueError, TypeError) as exc:
             logger.info('Error with validating: %s', value)
-            raise ValueError('Invalid date format')
+            raise ValueError('Invalid date format') from exc
