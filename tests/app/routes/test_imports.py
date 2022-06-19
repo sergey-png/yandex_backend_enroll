@@ -2,6 +2,7 @@
 
 import pytest
 
+
 API_BASEURL = 'http://localhost:8000'
 ROOT_ID = '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1'
 IMPORT_BATCHES = [
@@ -156,6 +157,7 @@ EXPECTED_TREE = {
     ]
 }
 
+
 @pytest.mark.asyncio
 async def test_import_new_items_1(client):
     global IMPORT_BATCHES
@@ -169,6 +171,26 @@ async def test_import_new_items_1(client):
             f'response_status_code: {response.status_code} '
             f'expected: 200'
         )
+
+
+@pytest.mark.asyncio
+async def test_import_new_item_with_not_existing_parentId(client):
+    json_import = {
+            'items': [
+                {
+                    'type': 'CATEGORY',
+                    'name': 'Товарs',
+                    'id': 'NewID',
+                    'parentId': "NeverExistParentID",
+                }
+            ],
+            'updateDate': '2022-02-01T12:00:00.000Z',
+        }
+    response = await client.post(
+        '/imports',
+        json=json_import,
+    )
+    assert response.status_code == 400
 
 
 @pytest.mark.asyncio
@@ -329,7 +351,7 @@ async def test_import_wrong_format_id(client):
 
 
 @pytest.mark.asyncio
-async def test_import_wrong_format_parentId(client):
+async def test_import_wrong_parentId(client):
     response = await client.post(
         '/imports',
         json={

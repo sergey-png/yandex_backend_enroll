@@ -186,7 +186,7 @@ async def test_restore_all_items(client):
 
 
 @pytest.mark.asyncio
-async def test_get_tree_with_id(client):
+async def test_get_existing_tree_with_id(client):
 
     response = await client.get(f'/nodes/{ROOT_ID}')
 
@@ -199,6 +199,7 @@ async def test_get_tree_with_id(client):
     deep_sort_children(EXPECTED_TREE)
     print_diff(EXPECTED_TREE, response_json)
     # assert response_json == EXPECTED_TREE, "Response tree doesn't match expected tree"
+    # TODO fix this test
 
 
 
@@ -220,3 +221,9 @@ def print_diff(expected, response):
 
     subprocess.run(["git", "--no-pager", "diff", "--no-index",
                     "expected.json", "response.json"])
+
+
+@pytest.mark.asyncio
+async def test_get_non_existing_tree_with_id(client):
+    response = await client.get(f'/nodes/NON_EXISTING_ID')
+    assert response.status_code == 404

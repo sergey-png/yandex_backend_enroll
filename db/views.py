@@ -16,25 +16,40 @@ def create_element(**data: Any) -> bool:
         if item.id == item.parentId:
             logger.info('Item cannot be parent of itself')
             return False
+
         # check if item with same id exists
         if session.query(Item).filter(Item.id == item.id).first():
             logger.info('Item with id "%s" already exists', item.id)
-            # check if item with parentId exists
+            # check if item with parentId
             if item.parentId:
                 logger.info('This Item with parentId "%s"', item.parentId)
+                # check if parentId exists
                 if not session.query(Item).filter(Item.id == item.parentId).first():
-                    return False
-                    # raise Exception('Parent item with id "%s" not found' % item.parentId)
+                    return False  # parentId does not exist in DB
+            #         # raise Exception('Parent item with id "%s" not found' % item.parentId)
             session.query(Item).filter(Item.id == item.id).update(data)
+            # TODO update all parents of this item
+
         else:
-            logger.info('Item with id "%s" does not exist', item.id)
+            logger.info('Item with id "%s" does not exist. Creating new one...', item.id)
+            # check if item with parentId
             if item.parentId:
                 logger.info('This Item with parentId "%s"', item.parentId)
                 if not session.query(Item).filter(Item.id == item.parentId).first():
                     return False
                     # raise Exception('Parent item with id "%s" not found' % item.parentId)
             session.add(item)
+            # TODO update all parents of this item
         return True
+
+
+def update_info(item_id: str, **data: Any) -> bool:
+    with create_session() as session:
+        item = session.query(Item).filter(Item.id == item_id).first()
+        if item:
+            session.query(Item).filter(Item.id == item_id).update(data)
+            return True
+        return False
 
 
 def delete_element(item_id: str) -> bool:
