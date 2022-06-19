@@ -13,9 +13,3 @@ async def test_delete_non_used_id(client):
     assert response.status_code == 404
     assert response.json() == {'detail': 'Item not found'}
 
-
-@pytest.mark.asyncio
-async def test_delete_invalid_id(client):
-    response = await client.delete(f'/delete/{"32a85f64-5717-4562-b3fc22-2c963f6643"}')
-    assert response.status_code == 400
-    assert response.json() == {'detail': 'Validation Failed'}

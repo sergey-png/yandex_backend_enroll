@@ -6,11 +6,14 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from app.routes.delete import router as delete_router
-from app.routes.imports import router
+from app.routes.imports import router as imports_router
+from app.routes.nodes import router as nodes_router
 
 app = FastAPI()
-app.include_router(router)
+app.include_router(imports_router)
 app.include_router(delete_router)
+app.include_router(nodes_router)
+
 app.add_exception_handler(RequestValidationError, JSONResponse)
 
 
