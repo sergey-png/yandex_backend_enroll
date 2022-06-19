@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 from enum import Enum, unique
 from typing import Any, Optional
+import re
 
 from pydantic import BaseModel, validator
 
@@ -25,7 +26,7 @@ class ShopUnitSchema(BaseModel):
 
     @validator('children', always=True)
     def validate_children(
-        cls, value: Optional[list['ShopUnitSchema']], values: dict[str, Any]
+            cls, value: Optional[list['ShopUnitSchema']], values: dict[str, Any]
     ) -> Optional[list['ShopUnitSchema']]:
         obj_type = values['type']
 
@@ -47,8 +48,15 @@ class ShopUnitImportSchema(BaseModel):
 
     @validator('price', always=True)
     def validate_price(
-        cls, value: Optional[int]
-    ) -> Optional[int]:  # TODO write new validator
+            cls, value: Optional[int], values: dict[str, Any]
+    ) -> Optional[int]:
+        obj_type = values.get('type')
+        if obj_type is None:
+            raise ValueError('Type is required')
+        if obj_type == ShopUnitType.CATEGORY and value is not None:
+            raise ValueError('Category price is not allowed')
+        if obj_type == ShopUnitType.OFFER and (value is None or value < 0):
+            raise ValueError('Offer price must be greater than 0')
         return value
 
 

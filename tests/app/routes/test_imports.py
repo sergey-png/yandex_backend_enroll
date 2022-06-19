@@ -4,11 +4,7 @@ import pytest
 
 API_BASEURL = 'http://localhost:8000'
 ROOT_ID = '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1'
-
-
-@pytest.mark.asyncio
-async def test_import_new_items_1(client):
-    IMPORT_BATCHES = [
+IMPORT_BATCHES = [
         {
             'items': [
                 {
@@ -83,14 +79,19 @@ async def test_import_new_items_1(client):
             'updateDate': '2022-02-03T15:00:00.000Z',
         },
     ]
+
+@pytest.mark.asyncio
+async def test_import_new_items_1(client):
+    global IMPORT_BATCHES
     for index, batch in enumerate(IMPORT_BATCHES):
         response = await client.post(
             '/imports',
             json=batch,
         )
         assert response.status_code == 200, (
-            f'Batch import failed with #{index}, '
-            f'response_status_code: {response.status_code}'
+            f'Batch import failed on index_{index}, '
+            f'response_status_code: {response.status_code} '
+            f'expected: 200'
         )
 
 
@@ -98,7 +99,7 @@ async def test_import_new_items_1(client):
 async def test_imports_post_validation_error(client):
     response = await client.post('/imports')
     assert (
-        response.status_code == 400
+            response.status_code == 400
     ), f'Response status code is {response.status_code}, expected 400'
 
 
@@ -176,3 +177,257 @@ async def test_wright_import_iso_date_format_2(client):
         },
     )
     assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_delete_row_with_id(client):
+    response = await client.delete(f'/delete/{ROOT_ID}')
+    assert response.status_code == 200
+    assert response.json() == {'id': ROOT_ID}
+
+
+@pytest.mark.asyncio
+async def test_import_wrong_format_type(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFERS_Invalid",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": None,
+                    "price": "4500",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_import_empty_format_name(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": None,
+                    "price": "4500",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_import_wrong_format_id(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": None,
+                    "parentId": None,
+                    "price": "4500",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_import_wrong_format_parentId(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": "Not exists",
+                    "price": "4500",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_import_id_equals_parentId(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "price": "4500",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_import_change_parentId_to_null(client):
+    global IMPORT_BATCHES
+    for index, batch in enumerate(IMPORT_BATCHES):
+        response = await client.post(
+            '/imports',
+            json=batch,
+        )
+        assert response.status_code == 200, (
+            f'Batch import failed on index_{index}, '
+            f'response_status_code: {response.status_code} '
+            f'expected: 200'
+        )
+
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": None,
+                    "price": "4500",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        }
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_import_change_parentId_to_existing(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": "1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2",
+                    "price": "4500",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        }
+    )
+    assert response.status_code == 200
+
+
+# @pytest.mark.asyncio
+# async def test_delete_root_category(client):
+#     response = await client.delete(f'/delete/{ROOT_ID}')
+#     assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_import_item_offer_with_price_null(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": None,
+                    "price": None,
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_import_item_offer_with_price_under_zero(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": None,
+                    "price": "-1",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.asyncio
+async def test_import_items_with_same_id(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": None,
+                    "price": "10000",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                },
+                {
+                    "type": "OFFER",
+                    "name": "Xomiа Readme 10",
+                    "id": "b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4",
+                    "parentId": None,
+                    "price": "20000",
+                    "date": "2022-02-02T12:00:00.000Z",
+                    "children": None
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 400

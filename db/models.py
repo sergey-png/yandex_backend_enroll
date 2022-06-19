@@ -39,7 +39,7 @@ class Item(BaseModel):
     name = sa.Column(sa.String, nullable=False)
     date = sa.Column(sa.String, nullable=False)
     type = sa.Column(sa.String, nullable=False)
-    parentId = sa.Column(sa.ForeignKey('item.id'), nullable=True)
+    parentId = sa.Column(sa.ForeignKey('item.id', ondelete='CASCADE'), nullable=True)
     price = sa.Column(sa.Integer, nullable=True)
 
     children = sa.orm.relationship(
