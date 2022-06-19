@@ -1,7 +1,11 @@
 # encoding=utf8
+import logging
+import json
+import subprocess
 
 import pytest
 
+logging.getLogger("uvicorn.error")
 
 API_BASEURL = 'http://localhost:8000'
 ROOT_ID = '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1'
@@ -158,42 +162,61 @@ EXPECTED_TREE = {
 }
 
 
+
 @pytest.mark.asyncio
-async def test_get_tree(client):
+async def test_delete_row_with_id(client):
+    response = await client.delete(f'/delete/{ROOT_ID}')
+    assert response.status_code == 200
+    assert response.json() == {'id': ROOT_ID}
+
+
+@pytest.mark.asyncio
+async def test_restore_all_items(client):
+    for index, batch in enumerate(IMPORT_BATCHES):
+        response = await client.post(
+            '/imports',
+            json=batch,
+        )
+        assert response.status_code == 200, (
+            f'Batch import failed on index_{index}, '
+            f'response_status_code: {response.status_code} '
+            f'expected: 200'
+        )
+
+
+
+@pytest.mark.asyncio
+async def test_get_tree_with_id(client):
+
     response = await client.get(f'/nodes/{ROOT_ID}')
 
     assert response.status_code == 200
-    assert response.json() == {'detail': 'Not Found'}
+    response_json = response.json()
+    logging.info("RESPONSE BEFORE: %s", response_json)
+    deep_sort_children(response_json)
+    logging.info("RESPONSE AFTER: %s", response_json)
+
+    deep_sort_children(EXPECTED_TREE)
+    print_diff(EXPECTED_TREE, response_json)
+    # assert response_json == EXPECTED_TREE, "Response tree doesn't match expected tree"
 
 
 
+def deep_sort_children(node):
+    if node.get("children"):
+        node["children"].sort(key=lambda x: x["id"])
 
+        for child in node["children"]:
+            deep_sort_children(child)
 
+def print_diff(expected, response):
+    with open("expected.json", "w") as f:
+        json.dump(expected, f, indent=2, ensure_ascii=False, sort_keys=True)
+        f.write("\n")
 
+    with open("response.json", "w") as f:
+        json.dump(response, f, indent=2, ensure_ascii=False, sort_keys=True)
+        f.write("\n")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    subprocess.run(["git", "--no-pager", "diff", "--no-index",
+                    "expected.json", "response.json"])
