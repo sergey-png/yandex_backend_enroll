@@ -198,8 +198,7 @@ async def test_get_existing_tree_with_id(client):
 
     deep_sort_children(EXPECTED_TREE)
     print_diff(EXPECTED_TREE, response_json)
-    # assert response_json == EXPECTED_TREE, "Response tree doesn't match expected tree"
-    # TODO fix this test
+    assert response_json == EXPECTED_TREE, "Response tree doesn't match expected tree"
 
 
 

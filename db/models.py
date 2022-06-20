@@ -41,6 +41,8 @@ class Item(BaseModel):
     type = sa.Column(sa.String, nullable=False)
     parentId = sa.Column(sa.ForeignKey('item.id', ondelete='CASCADE'), nullable=True)
     price = sa.Column(sa.Integer, nullable=True)
+    all_price = sa.Column(sa.Integer, nullable=True)
+    count_items = sa.Column(sa.Integer, nullable=True)
 
     children = sa.orm.relationship(
         'Item',
