@@ -39,7 +39,7 @@ def create_element(**data: Any) -> bool:
                 else:
                     # parentIds are different
 
-                    if found_item.parentId:  # parentId is not None
+                    if found_item.parentId is not None:  # parentId is not None
                         original_item_to_change = item_to_change.copy()
 
                         item_to_change.parentId = None
@@ -70,8 +70,7 @@ def delete_element(item_id: str) -> bool:
         item = session.query(Item).filter(Item.id == item_id).first()
         if item:
             logger.info('Item with id %s found', item_id)
-            session.delete(item)
-            return True
+            return delete_item(session, item)
         else:
             logger.info('Item with id %s not found', item_id)
             return False
@@ -85,6 +84,28 @@ def get_one_element(item_id: str) -> Optional[list]:
             logger.info('RESULT_VALUES CHILDREN ID = %s', result_values.children)
             return result_values
         return None
+
+
+# delete item
+def delete_item(session: Any, item_to_delete: Item) -> bool:
+    if item_to_delete.parentId is None:
+        logger.info('Item with id "%s" has no parentId', item_to_delete.id)
+        session.delete(item_to_delete)
+    else:
+
+        update_item_parentId_to_None_after_deleting(session, item_to_delete, item_to_delete)
+
+
+
+
+
+
+
+
+
+
+        session.delete(item_to_delete)
+    return True
 
 
 # when item_to_change updates and parentId doesn't change
@@ -113,12 +134,6 @@ def update_item_parentId_without_changes(session: Any, item_to_change: Item, fou
                         dict(all_price=parent_item.all_price,
                              date=parent_item.date,
                              price=parent_item.price))
-                elif parent_item.type == 'OFFER' and item_to_change.type == 'OFFER':
-                    logger.info("Parent item is OFFER as well as item_to_add, ERROR")
-                    return False
-                elif parent_item.type == 'OFFER' and item_to_change.type == 'CATEGORY':
-                    logger.info("Parent item is OFFER, but item_to_add is CATEGORY, ERROR")
-                    return False
                 elif parent_item.type == 'CATEGORY' and item_to_change.type == 'CATEGORY':
 
                     parent_item.all_price += new_data_for_others['price']
@@ -136,7 +151,6 @@ def update_item_parentId_without_changes(session: Any, item_to_change: Item, fou
             else:
                 break
     elif item_to_change.type == "CATEGORY":
-
         session.query(Item).filter(Item.id == item_to_change.id).update(data)
         item_to_change = session.query(Item).filter(Item.id == item_to_change.id).first()
         item_to_change.price = item_to_change.all_price // item_to_change.count_items \
@@ -296,6 +310,69 @@ def update_item_parentID_to_None(session: Any, found_item: Item, item_to_change:
     session.query(Item).filter(Item.id == found_item_original.id).update(data)
     return True
 
+
+def update_item_parentId_to_None_after_deleting(session: Any, found_item: Item, item_to_change: Item) -> bool:
+    found_item_original = found_item.copy()
+    if item_to_change.type == "OFFER":
+        while True:
+            parent_item = session.query(Item).filter(Item.id == found_item.parentId).first()
+            if parent_item:
+                if parent_item.type == 'CATEGORY' and found_item.type == 'OFFER':
+                    parent_item.all_price -= found_item_original.price
+                    parent_item.count_items -= 1
+                    parent_item.price = parent_item.all_price // parent_item.count_items \
+                        if parent_item.count_items else None
+
+                    session.query(Item).filter(Item.id == parent_item.id).update(
+                        dict(
+                            all_price=parent_item.all_price,
+                            count_items=parent_item.count_items,
+                            price=parent_item.price
+                        )
+                    )
+                elif parent_item.type == 'CATEGORY' and found_item.type == 'CATEGORY':
+                    parent_item.all_price -= found_item_original.price
+                    parent_item.count_items -= 1
+                    parent_item.price = parent_item.all_price // parent_item.count_items \
+                        if parent_item.count_items else None
+
+
+                    session.query(Item).filter(Item.id == parent_item.id).update(
+                        dict(
+                            all_price=parent_item.all_price,
+                            count_items=parent_item.count_items,
+                            price=parent_item.price
+                        )
+                    )
+                found_item = parent_item
+            else:
+                break
+
+    elif item_to_change.type == "CATEGORY":
+        # if  is None:
+        #     data['price'] = found_item_original.all_price // found_item_original.count_items \
+        #         if found_item_original.count_items else None
+        while True:
+            parent_item = session.query(Item).filter(Item.id == found_item.parentId).first()
+            if parent_item:
+                if parent_item.type == 'CATEGORY' and found_item.type == 'CATEGORY':
+                    parent_item.all_price -= found_item_original.all_price
+                    parent_item.count_items -= found_item_original.count_items
+                    parent_item.price = parent_item.all_price // parent_item.count_items \
+                        if parent_item.count_items else None
+
+
+                    session.query(Item).filter(Item.id == parent_item.id).update(
+                        dict(
+                            all_price=parent_item.all_price,
+                            count_items=parent_item.count_items,
+                            price=parent_item.price
+                        )
+                    )
+                    found_item = parent_item
+            else:
+                break
+    return True
 
 def add_element(session: Any, item_to_add: Item, data: dict[str, Any]) -> bool:
     logger.info('*START*')

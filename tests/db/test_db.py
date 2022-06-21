@@ -3,6 +3,7 @@ import logging
 import pytest
 
 from db.init import create_session
+from db.models import Item
 
 logging.getLogger('uvicorn.error')
 
@@ -25,3 +26,12 @@ def test_create_session_and_rise_exception():
             assert session is not None
             raise Exception('test')
 
+
+def test_create_Item_and_copy():
+    with create_session() as session:
+        item = Item(name='test')
+        session.add(item)
+        session.rollback()
+        item_copy = item.copy(with_children=True)
+        assert item_copy.id == item.id
+        assert item_copy.name == item.name
