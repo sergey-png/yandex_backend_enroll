@@ -1,17 +1,12 @@
 import logging
-from fastapi import HTTPException
-from typing import Dict
 from typing import Optional
-import re
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
-
-from db.views import get_one_element
 from app.schemas import ShopUnitSchema
+from db.views import get_one_element
 
-
-logger = logging.getLogger("uvicorn.error")
+logger = logging.getLogger('uvicorn.error')
 
 router = APIRouter(
     prefix='/nodes',

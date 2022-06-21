@@ -4,6 +4,7 @@ from typing import Any, Optional
 from db.init import create_session
 from db.models import Item
 from db.viewshopunit import ShopUnitView
+from collections import defaultdict
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -24,23 +25,101 @@ def create_element(**data: Any) -> bool:
             # check if item_to_change with parentId
             if item_to_change.parentId:
                 logger.info('This Item with parentId "%s"', item_to_change.parentId)
-                # check if parentId exists
-                if not session.query(Item).filter(Item.id == item_to_change.parentId).first():
+                # check if parentId exists in db
+                if not session.query(Item).filter(Item.id == item_to_change.parentId).first():  # Done
                     # raise Exception('Parent item_to_change with id "%s" not found' % item_to_change.parentId)
                     return False  # parentId does not exist in DB
 
                 # check if item_to_change changes parentId
                 if found_item.parentId == item_to_change.parentId:
+                    # parentId is the same, so update item_to_change
                     logger.info('Found Item with parentId "%s" has no difference with item_to_change parentId "%s"',
                                 found_item.parentId, item_to_change.parentId)
-                    session.query(Item).filter(Item.id == item_to_change.id).update(data)
 
-                else:
+                    new_data_for_others = defaultdict(dict[str, Any])
+
+                    if item_to_change.type == "OFFER":
+                        new_data_for_others['price'] = item_to_change.price - found_item.price
+
+                        session.query(Item).filter(Item.id == item_to_change.id).update(data)
+
+                        # update all parents of this item_to_change
+                        while True:
+                            parent_item = session.query(Item).filter(Item.id == item_to_change.parentId).first()
+                            if parent_item:
+                                if parent_item.type == 'CATEGORY' and item_to_change.type == 'OFFER':
+                                    parent_item.all_price += new_data_for_others['price']
+
+                                    parent_item.date = item_to_change.date
+                                    if parent_item.count_items == 0:
+                                        parent_item.price = 0
+                                    else:
+                                        parent_item.price = parent_item.all_price // parent_item.count_items
+
+                                    session.query(Item).filter(Item.id == parent_item.id).update(
+                                        dict(all_price=parent_item.all_price,
+                                             date=parent_item.date,
+                                             price=parent_item.price))
+                                elif parent_item.type == 'OFFER' and item_to_change.type == 'OFFER':
+                                    logger.info("Parent item is OFFER as well as item_to_add, ERROR")
+                                    return False
+                                elif parent_item.type == 'OFFER' and item_to_change.type == 'CATEGORY':
+                                    logger.info("Parent item is OFFER, but item_to_add is CATEGORY, ERROR")
+                                    return False
+                                elif parent_item.type == 'CATEGORY' and item_to_change.type == 'CATEGORY':
+
+                                    parent_item.all_price += new_data_for_others['price']
+
+                                    parent_item.date = item_to_change.date
+                                    if parent_item.count_items == 0:
+                                        parent_item.price = 0
+                                    else:
+                                        parent_item.price = parent_item.all_price // parent_item.count_items
+
+                                    session.query(Item).filter(Item.id == parent_item.id).update(
+                                        dict(all_price=parent_item.all_price,
+                                             date=parent_item.date,
+                                             price=parent_item.price))
+                                item_to_change = parent_item
+                            else:
+                                break
+                    elif item_to_change.type == "CATEGORY":
+
+                        session.query(Item).filter(Item.id == item_to_change.id).update(data)
+                        item_to_change = session.query(Item).filter(Item.id == item_to_change.id).first()
+                        item_to_change.price = item_to_change.all_price // item_to_change.count_items
+                        session.query(Item).filter(Item.id == item_to_change.id).update(
+                            dict(
+                                price=item_to_change.price,
+                                date=item_to_change.date,
+                            )
+                        )
+
+                        # update all parents of this item_to_change
+                        while True:
+                            parent_item = session.query(Item).filter(Item.id == item_to_change.parentId).first()
+                            if parent_item:
+                                if parent_item.type == 'CATEGORY' and item_to_change.type == 'CATEGORY':
+                                    parent_item.date = item_to_change.date
+                                    session.query(Item).filter(Item.id == parent_item.id).update(
+                                        dict(date=parent_item.date))
+                                item_to_change = parent_item
+                            else:
+                                break
+
+                else:  # TODO if item_to_change changes parentId
+                    # parentId is different, so delete found_item and create item_to_change
                     logger.info('Found Item with different parentId "%s" that changes self parentId to "%s"',
                                 found_item.parentId, item_to_change.parentId)
                     session.query(Item).filter(Item.id == item_to_change.id).update(data)
 
-            # TODO update all parents of this item_to_change
+            else:
+                # TODO item_to_change will be deleted, then create new item_to_change, but this affects all parents
+                #  of this item_to_change after delete
+                # when found_item change parentId -> None and updates itself
+                logger.info('This item_to_change with no parentId, but found item with parentId "%s"',
+                            found_item.parentId)
+                session.query(Item).filter(Item.id == item_to_change.id).update(data)
 
         else:
             item_to_add = item_to_change
@@ -122,8 +201,6 @@ def create_element(**data: Any) -> bool:
                     item_to_add.all_price = None
                     item_to_add.count_items = 1
                 session.add(item_to_add)
-
-            # TODO update all parents of this item_to_change
         return True
 
 

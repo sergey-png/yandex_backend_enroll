@@ -1,9 +1,10 @@
+import logging
+
 import pytest
 
-import logging
 from db.init import create_session
 
-logging.getLogger("uvicorn.error")
+logging.getLogger('uvicorn.error')
 
 
 def test_create_session():
@@ -22,5 +23,4 @@ def test_create_session_and_rise_exception():
     with pytest.raises(Exception):
         with create_session() as session:
             assert session is not None
-            raise Exception("test")
-
+            raise Exception('test')

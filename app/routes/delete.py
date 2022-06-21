@@ -1,10 +1,7 @@
 import logging
-from fastapi import HTTPException
-from typing import Dict
-from typing import Optional
-import re
+from typing import Dict, Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from db.views import delete_element
 

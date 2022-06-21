@@ -1,7 +1,6 @@
 import logging
 
-from fastapi import APIRouter
-from fastapi import HTTPException
+from fastapi import APIRouter, HTTPException
 
 from app.schemas import ShopUnitImportRequestSchema
 from db.views import create_element

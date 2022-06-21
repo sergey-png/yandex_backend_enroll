@@ -2,13 +2,10 @@ import logging
 from datetime import datetime
 from enum import Enum, unique
 from typing import Any, Optional
-import re
 
 from pydantic import BaseModel, validator
-from db.init import create_session
 
-
-logger = logging.getLogger("uvicorn.error")
+logger = logging.getLogger('uvicorn.error')
 
 
 @unique
@@ -28,10 +25,10 @@ class ShopUnitSchema(BaseModel):
 
     @validator('children', always=True)
     def validate_children(
-            cls, value: Optional[list['ShopUnitSchema']], values: dict[str, Any]
+        cls, value: Optional[list['ShopUnitSchema']], values: dict[str, Any]
     ) -> Optional[list['ShopUnitSchema']]:
-        logger.info("values = %s", values)
-        logger.info("value = %s", value)
+        logger.info('values = %s', values)
+        logger.info('value = %s', value)
         obj_type = values.get('type')
         if obj_type is None:
             return None
@@ -54,13 +51,15 @@ class ShopUnitImportSchema(BaseModel):
 
     @validator('price', always=True)
     def validate_price(
-            cls, value: Optional[int], values: dict[str, Any]
+        cls, value: Optional[int], values: dict[str, Any]
     ) -> int:
         obj_type = values.get('type')
         if obj_type is None:
             raise ValueError('Type is required')
         if obj_type == ShopUnitType.CATEGORY and value is not None:
-            raise ValueError('Category price is not allowed for type "CATEGORY"')
+            raise ValueError(
+                'Category price is not allowed for type "CATEGORY"'
+            )
         if obj_type == ShopUnitType.OFFER and (value is None or value < 0):
             raise ValueError('Offer price must be greater than 0')
         return value
@@ -83,7 +82,9 @@ class ShopUnitImportRequestSchema(BaseModel):
             raise ValueError('Invalid date format') from exc
 
     @validator('items', always=True)
-    def validate_items(cls, value: list[ShopUnitImportSchema]) -> list[ShopUnitImportSchema]:
+    def validate_items(
+        cls, value: list[ShopUnitImportSchema]
+    ) -> list[ShopUnitImportSchema]:
         logger.info('**************Validating items: %s', value)
         result_items: set = set()
         for item in value:
