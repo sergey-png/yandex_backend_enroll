@@ -52,3 +52,16 @@ class Item(BaseModel):
         cascade='all, delete-orphan',
         passive_deletes=True,
     )
+
+    def copy(self, with_children=False):
+        return Item(
+            id=self.id,
+            name=self.name,
+            date=self.date,
+            type=self.type,
+            parentId=self.parentId,
+            price=self.price,
+            all_price=self.all_price,
+            count_items=self.count_items,
+            children=[child.copy() for child in self.children] if with_children else [],
+        )

@@ -24,3 +24,4 @@ def test_create_session_and_rise_exception():
         with create_session() as session:
             assert session is not None
             raise Exception('test')
+

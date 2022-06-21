@@ -569,3 +569,44 @@ async def test_import_offer_with_price_for_category(client):
         },
     )
     assert response.status_code == 400
+
+"""
+@pytest.mark.asyncio
+async def test_import_new_category_1(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    'type': 'CATEGORY',
+                    'name': 'New_Item',
+                    'id': 'New Id',
+                    'parentId': None,
+                    'children': None,
+                }
+            ],
+            'updateDate': '2022-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_import_new_offer_1(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    'type': 'OFFER',
+                    'name': 'New_OFFER',
+                    'id': 'offers_ID',
+                    'parentId': "New Id",
+                    'price': 51000,
+                }
+            ],
+            'updateDate': '2023-06-18T10:36:08Z',
+        },
+    )
+    assert response.status_code == 200
+"""

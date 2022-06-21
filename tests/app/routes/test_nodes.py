@@ -463,3 +463,560 @@ async def test_get_existing_tree_with_id_3(client):
     assert (
         response_json == EXPECTED_TREE_2
     ), "Response tree doesn't match expected tree"
+
+
+@pytest.mark.asyncio
+async def test_change_offer_parentId_to_none(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    'type': 'OFFER',
+                    'name': 'Phyllis 50" LED UHD Smarter',
+                    'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
+                    'parentId': None,
+                    'price': 50000,
+                }
+            ],
+            'updateDate': '2024-01-01T10:00:00Z',
+        },
+    )
+    assert response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_get_existing_tree_with_id_4(client):
+
+    response = await client.get(f'/nodes/{ROOT_ID}')
+
+    assert response.status_code == 200
+    response_json = response.json()
+    logging.info('RESPONSE BEFORE: %s', response_json)
+    deep_sort_children(response_json)
+    logging.info('RESPONSE AFTER: %s', response_json)
+
+    EXPECTED_TREE_2 = {
+        'type': 'CATEGORY',
+        'name': 'Товары',
+        'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+        'price': 50749,
+        'parentId': None,
+        'date': '2024-01-01T10:00:00.000Z',
+        'children': [
+            {
+                'type': 'CATEGORY',
+                'name': 'Телекомуникации',
+                'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+                'price': 31499,
+                'date': '2024-01-01T10:00:00.000Z',
+                'children': [
+                    {
+                        'type': 'OFFER',
+                        'name': "Samson 70\" LED UHD Smart",
+                        'id': '98883e8f-0507-482f-bce2-2fb306cf6483',
+                        'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                        'price': 32999,
+                        'date': '2022-02-03T12:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': 'Update Readme 10',
+                        'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
+                        'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                        'price': 30000,
+                        'date': '2022-06-18T17:36:08.000Z',
+                        'children': None,
+                    },
+                ],
+            },
+            {
+                'type': 'CATEGORY',
+                'name': 'Смартфоны',
+                'id': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+                'price': 69999,
+                'date': '2022-02-02T12:00:00.000Z',
+                'children': [
+                    {
+                        'type': 'OFFER',
+                        'name': 'jPhone 13',
+                        'id': '863e1a7a-1304-42ae-943b-179184c077e3',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 79999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': 'Xomiа Readme 10',
+                        'id': 'b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 59999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                ],
+            },
+        ],
+    }
+
+    deep_sort_children(EXPECTED_TREE_2)
+    print_diff(EXPECTED_TREE_2, response_json)
+    assert (
+        response_json == EXPECTED_TREE_2
+    ), "Response tree doesn't match expected tree"
+
+
+@pytest.mark.asyncio
+async def test_change_category_parentId_to_none(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    'type': 'CATEGORY',
+                    'name': 'Телевизоры Back',
+                    'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                    'parentId': None,
+                }
+            ],
+            'updateDate': '2025-01-01T10:00:00Z',
+        },
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_get_existing_tree_with_id_5(client):
+
+    response = await client.get(f'/nodes/{ROOT_ID}')
+
+    assert response.status_code == 200
+    response_json = response.json()
+    logging.info('RESPONSE BEFORE: %s', response_json)
+    deep_sort_children(response_json)
+    logging.info('RESPONSE AFTER: %s', response_json)
+
+    EXPECTED_TREE_2 = {
+        'type': 'CATEGORY',
+        'name': 'Товары',
+        'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+        'price': 69999,
+        'parentId': None,
+        'date': '2025-01-01T10:00:00.000Z',
+        'children': [
+            {
+                'type': 'CATEGORY',
+                'name': 'Смартфоны',
+                'id': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+                'price': 69999,
+                'date': '2022-02-02T12:00:00.000Z',
+                'children': [
+                    {
+                        'type': 'OFFER',
+                        'name': 'jPhone 13',
+                        'id': '863e1a7a-1304-42ae-943b-179184c077e3',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 79999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': 'Xomiа Readme 10',
+                        'id': 'b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 59999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                ],
+            },
+        ],
+    }
+
+    deep_sort_children(EXPECTED_TREE_2)
+    print_diff(EXPECTED_TREE_2, response_json)
+    assert (
+        response_json == EXPECTED_TREE_2
+    ), "Response tree doesn't match expected tree"
+
+
+@pytest.mark.asyncio
+async def test_get_existing_tree_with_id_6(client):
+
+    response = await client.get(f'/nodes/1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2')
+
+    assert response.status_code == 200
+    response_json = response.json()
+    logging.info('RESPONSE BEFORE: %s', response_json)
+    deep_sort_children(response_json)
+    logging.info('RESPONSE AFTER: %s', response_json)
+
+    EXPECTED_TREE_2 = {
+        'type': 'CATEGORY',
+        'name': 'Телевизоры Back',
+        'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+        'parentId': None,
+        'price': 31499,
+        'date': '2025-01-01T10:00:00.000Z',
+        'children': [
+            {
+                'type': 'OFFER',
+                'name': "Samson 70\" LED UHD Smart",
+                'id': '98883e8f-0507-482f-bce2-2fb306cf6483',
+                'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                'price': 32999,
+                'date': '2022-02-03T12:00:00.000Z',
+                'children': None,
+            },
+            {
+                'type': 'OFFER',
+                'name': 'Update Readme 10',
+                'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
+                'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                'price': 30000,
+                'date': '2022-06-18T17:36:08.000Z',
+                'children': None,
+            },
+        ],
+    }
+
+    deep_sort_children(EXPECTED_TREE_2)
+    print_diff(EXPECTED_TREE_2, response_json)
+    assert (
+        response_json == EXPECTED_TREE_2
+    ), "Response tree doesn't match expected tree"
+
+
+
+@pytest.mark.asyncio
+async def test_change_category_parentId_from_none_to_existing(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    'type': 'CATEGORY',
+                    'name': 'Телевизоры',
+                    'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                    'parentId': "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+                }
+            ],
+            'updateDate': '2026-01-01T10:00:00Z',
+        },
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_get_existing_tree_with_id_7(client):
+
+    response = await client.get(f'/nodes/{ROOT_ID}')
+
+    assert response.status_code == 200
+    response_json = response.json()
+    logging.info('RESPONSE BEFORE: %s', response_json)
+    deep_sort_children(response_json)
+    logging.info('RESPONSE AFTER: %s', response_json)
+
+    EXPECTED_TREE_2 = {
+        'type': 'CATEGORY',
+        'name': 'Товары',
+        'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+        'price': 50749,
+        'parentId': None,
+        'date': '2026-01-01T10:00:00.000Z',
+        'children': [
+            {
+                'type': 'CATEGORY',
+                'name': 'Телевизоры',
+                'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+                'price': 31499,
+                'date': '2026-01-01T10:00:00.000Z',
+                'children': [
+                    {
+                        'type': 'OFFER',
+                        'name': "Samson 70\" LED UHD Smart",
+                        'id': '98883e8f-0507-482f-bce2-2fb306cf6483',
+                        'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                        'price': 32999,
+                        'date': '2022-02-03T12:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': 'Update Readme 10',
+                        'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
+                        'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                        'price': 30000,
+                        'date': '2022-06-18T17:36:08.000Z',
+                        'children': None,
+                    },
+                ],
+            },
+            {
+                'type': 'CATEGORY',
+                'name': 'Смартфоны',
+                'id': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+                'price': 69999,
+                'date': '2022-02-02T12:00:00.000Z',
+                'children': [
+                    {
+                        'type': 'OFFER',
+                        'name': 'jPhone 13',
+                        'id': '863e1a7a-1304-42ae-943b-179184c077e3',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 79999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': 'Xomiа Readme 10',
+                        'id': 'b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 59999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                ],
+            },
+        ],
+    }
+
+    deep_sort_children(EXPECTED_TREE_2)
+    print_diff(EXPECTED_TREE_2, response_json)
+    assert (
+        response_json == EXPECTED_TREE_2
+    ), "Response tree doesn't match expected tree"
+
+
+@pytest.mark.asyncio
+async def test_change_offer_parentId_from_none_to_existing(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    'type': 'OFFER',
+                    'name': 'Phyllis 10',
+                    'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
+                    'parentId': "1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2",
+                    'price': 10000,
+                }
+            ],
+            'updateDate': '2027-01-01T10:00:00Z',
+        },
+    )
+    assert response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_get_existing_tree_with_id_8(client):
+
+    response = await client.get(f'/nodes/{ROOT_ID}')
+
+    assert response.status_code == 200
+    response_json = response.json()
+    logging.info('RESPONSE BEFORE: %s', response_json)
+    deep_sort_children(response_json)
+    logging.info('RESPONSE AFTER: %s', response_json)
+
+    EXPECTED_TREE_2 = {
+        'type': 'CATEGORY',
+        'name': 'Товары',
+        'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+        'price': 42599,
+        'parentId': None,
+        'date': '2027-01-01T10:00:00.000Z',
+        'children': [
+            {
+                'type': 'CATEGORY',
+                'name': 'Телевизоры',
+                'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+                'price': 24333,
+                'date': '2027-01-01T10:00:00.000Z',
+                'children': [
+                    {
+                        'type': 'OFFER',
+                        'name': "Samson 70\" LED UHD Smart",
+                        'id': '98883e8f-0507-482f-bce2-2fb306cf6483',
+                        'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                        'price': 32999,
+                        'date': '2022-02-03T12:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': "Phyllis 10",
+                        'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
+                        'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                        'price': 10000,
+                        'date': '2027-01-01T10:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': "Update Readme 10",
+                        'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
+                        'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                        'price': 30000,
+                        'date': '2022-06-18T17:36:08.000Z',
+                        'children': None,
+                    },
+                ],
+            },
+            {
+                'type': 'CATEGORY',
+                'name': 'Смартфоны',
+                'id': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+                'price': 69999,
+                'date': '2022-02-02T12:00:00.000Z',
+                'children': [
+                    {
+                        'type': 'OFFER',
+                        'name': 'jPhone 13',
+                        'id': '863e1a7a-1304-42ae-943b-179184c077e3',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 79999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': 'Xomiа Readme 10',
+                        'id': 'b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 59999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                ],
+            },
+        ],
+    }
+
+    deep_sort_children(EXPECTED_TREE_2)
+    print_diff(EXPECTED_TREE_2, response_json)
+    assert (
+        response_json == EXPECTED_TREE_2
+    ), "Response tree doesn't match expected tree"
+
+
+@pytest.mark.asyncio
+async def test_change_category_parentId_1(client):
+    response = await client.post(
+        '/imports',
+        json={
+            'items': [
+                {
+                    'type': 'CATEGORY',
+                    'name': 'Телевизоры',
+                    'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                    'parentId': "d515e43f-f3f6-4471-bb77-6b455017a2d2",
+                }
+            ],
+            'updateDate': '2028-01-01T10:00:00Z',
+        },
+    )
+    assert response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_get_existing_tree_with_id_9(client):
+
+    response = await client.get(f'/nodes/{ROOT_ID}')
+
+    assert response.status_code == 200
+    response_json = response.json()
+    logging.info('RESPONSE BEFORE: %s', response_json)
+    deep_sort_children(response_json)
+    logging.info('RESPONSE AFTER: %s', response_json)
+
+    EXPECTED_TREE_2 = {
+        'type': 'CATEGORY',
+        'name': 'Товары',
+        'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+        'price': 42599,
+        'parentId': None,
+        'date': '2028-01-01T10:00:00.000Z',
+        'children': [
+            {
+                'type': 'CATEGORY',
+                'name': 'Смартфоны',
+                'id': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
+                'price': 42599,
+                'date': '2028-01-01T10:00:00.000Z',
+                'children': [
+                    {
+                        'type': 'CATEGORY',
+                        'name': 'Телевизоры',
+                        'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 24333,
+                        'date': '2028-01-01T10:00:00.000Z',
+                        'children': [
+                            {
+                                'type': 'OFFER',
+                                'name': "Samson 70\" LED UHD Smart",
+                                'id': '98883e8f-0507-482f-bce2-2fb306cf6483',
+                                'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                                'price': 32999,
+                                'date': '2022-02-03T12:00:00.000Z',
+                                'children': None,
+                            },
+                            {
+                                'type': 'OFFER',
+                                'name': "Phyllis 10",
+                                'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
+                                'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                                'price': 10000,
+                                'date': '2027-01-01T10:00:00.000Z',
+                                'children': None,
+                            },
+                            {
+                                'type': 'OFFER',
+                                'name': "Update Readme 10",
+                                'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
+                                'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                                'price': 30000,
+                                'date': '2022-06-18T17:36:08.000Z',
+                                'children': None,
+                            },
+                        ],
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': 'jPhone 13',
+                        'id': '863e1a7a-1304-42ae-943b-179184c077e3',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 79999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                    {
+                        'type': 'OFFER',
+                        'name': 'Xomiа Readme 10',
+                        'id': 'b1d8fd7d-2ae3-47d5-b2f9-0f094af800d4',
+                        'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
+                        'price': 59999,
+                        'date': '2022-02-02T12:00:00.000Z',
+                        'children': None,
+                    },
+                ],
+            },
+        ],
+    }
+
+    deep_sort_children(EXPECTED_TREE_2)
+    print_diff(EXPECTED_TREE_2, response_json)
+    assert (
+        response_json == EXPECTED_TREE_2
+    ), "Response tree doesn't match expected tree"
