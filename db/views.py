@@ -24,6 +24,14 @@ def create_element(**data: Any) -> bool:
             session.query(Item).filter(Item.id == item_to_change.id).first()
         )
         if found_item:
+            if (
+                found_item.type == 'CATEGORY'
+                and item_to_change.type == 'OFFER'
+            ) or (
+                found_item.type == 'OFFER'
+                and item_to_change.type == 'CATEGORY'
+            ):
+                return False
             logger.info('Item with id "%s" already exists', item_to_change.id)
             # check if item_to_change with parentId
             if item_to_change.parentId:
@@ -31,11 +39,15 @@ def create_element(**data: Any) -> bool:
                     'This Item with parentId "%s"', item_to_change.parentId
                 )
                 # check if parentId exists in db
-                if (
-                    not session.query(Item)
+                parent_kek: Item = (
+                    session.query(Item)
                     .filter(Item.id == item_to_change.parentId)
                     .first()
-                ):  # Done
+                )
+                if parent_kek:
+                    if parent_kek.type == 'OFFER':
+                        return False
+                else:
                     return False  # parentId does not exist in DB
 
                 # check if item_to_change changes parentId
@@ -636,6 +648,12 @@ def add_element(session: Any, item_to_add: Item, data: dict[str, Any]) -> bool:
     )
     # check if item_to_change with parentId
     if item_to_add.parentId:
+        parent_kek: Item = (
+            session.query(Item).filter(Item.id == item_to_add.parentId).first()
+        )
+        if parent_kek:
+            if parent_kek.type == 'OFFER':
+                return False
         logger.info('This Item with parentId "%s"', item_to_add.parentId)
         if (
             not session.query(Item)
