@@ -52,7 +52,7 @@ class ShopUnitImportSchema(BaseModel):
     @validator('price', always=True)
     def validate_price(
         cls, value: Optional[int], values: dict[str, Any]
-    ) -> int:
+    ) -> Optional[int]:
         obj_type = values.get('type')
         if obj_type is None:
             raise ValueError('Type is required')
@@ -86,7 +86,7 @@ class ShopUnitImportRequestSchema(BaseModel):
         cls, value: list[ShopUnitImportSchema]
     ) -> list[ShopUnitImportSchema]:
         logger.info('**************Validating items: %s', value)
-        result_items: set = set()
+        result_items: set[str] = set()
         for item in value:
             logger.info('Validating item: %s', item)
             result_items.add(item.id)

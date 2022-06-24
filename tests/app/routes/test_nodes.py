@@ -484,6 +484,7 @@ async def test_change_offer_parentId_to_none(client):
     )
     assert response.status_code == 200
 
+
 @pytest.mark.asyncio
 async def test_get_existing_tree_with_id_4(client):
 
@@ -692,7 +693,6 @@ async def test_get_existing_tree_with_id_6(client):
     ), "Response tree doesn't match expected tree"
 
 
-
 @pytest.mark.asyncio
 async def test_change_category_parentId_from_none_to_existing(client):
     response = await client.post(
@@ -703,7 +703,7 @@ async def test_change_category_parentId_from_none_to_existing(client):
                     'type': 'CATEGORY',
                     'name': 'Телевизоры',
                     'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
-                    'parentId': "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+                    'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
                 }
             ],
             'updateDate': '2026-01-01T10:00:00Z',
@@ -797,7 +797,6 @@ async def test_get_existing_tree_with_id_7(client):
     ), "Response tree doesn't match expected tree"
 
 
-
 @pytest.mark.asyncio
 async def test_change_offer_parentId_from_none_to_existing(client):
     response = await client.post(
@@ -808,7 +807,7 @@ async def test_change_offer_parentId_from_none_to_existing(client):
                     'type': 'OFFER',
                     'name': 'Phyllis 10',
                     'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
-                    'parentId': "1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2",
+                    'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                     'price': 10000,
                 }
             ],
@@ -816,6 +815,7 @@ async def test_change_offer_parentId_from_none_to_existing(client):
         },
     )
     assert response.status_code == 200
+
 
 @pytest.mark.asyncio
 async def test_get_existing_tree_with_id_8(client):
@@ -855,7 +855,7 @@ async def test_get_existing_tree_with_id_8(client):
                     },
                     {
                         'type': 'OFFER',
-                        'name': "Phyllis 10",
+                        'name': 'Phyllis 10',
                         'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
                         'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                         'price': 10000,
@@ -864,7 +864,7 @@ async def test_get_existing_tree_with_id_8(client):
                     },
                     {
                         'type': 'OFFER',
-                        'name': "Update Readme 10",
+                        'name': 'Update Readme 10',
                         'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
                         'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                         'price': 30000,
@@ -921,13 +921,14 @@ async def test_change_category_parentId_1(client):
                     'type': 'CATEGORY',
                     'name': 'Телевизоры',
                     'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
-                    'parentId': "d515e43f-f3f6-4471-bb77-6b455017a2d2",
+                    'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
                 }
             ],
             'updateDate': '2028-01-01T10:00:00Z',
         },
     )
     assert response.status_code == 200
+
 
 @pytest.mark.asyncio
 async def test_get_existing_tree_with_id_9(client):
@@ -975,7 +976,7 @@ async def test_get_existing_tree_with_id_9(client):
                             },
                             {
                                 'type': 'OFFER',
-                                'name': "Phyllis 10",
+                                'name': 'Phyllis 10',
                                 'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
                                 'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                                 'price': 10000,
@@ -984,7 +985,7 @@ async def test_get_existing_tree_with_id_9(client):
                             },
                             {
                                 'type': 'OFFER',
-                                'name': "Update Readme 10",
+                                'name': 'Update Readme 10',
                                 'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
                                 'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                                 'price': 30000,
@@ -1033,7 +1034,7 @@ async def test_change_category_parentId_2(client):
                     'type': 'CATEGORY',
                     'name': 'Телевизоры',
                     'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
-                    'parentId': "069cb8d7-bbdd-47d3-ad8f-82ef4c269df1",
+                    'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
                 }
             ],
             'updateDate': '2029-01-01T10:00:00Z',
@@ -1080,7 +1081,7 @@ async def test_get_existing_tree_with_id_10(client):
                     },
                     {
                         'type': 'OFFER',
-                        'name': "Phyllis 10",
+                        'name': 'Phyllis 10',
                         'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
                         'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                         'price': 10000,
@@ -1089,7 +1090,7 @@ async def test_get_existing_tree_with_id_10(client):
                     },
                     {
                         'type': 'OFFER',
-                        'name': "Update Readme 10",
+                        'name': 'Update Readme 10',
                         'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
                         'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                         'price': 30000,
@@ -1156,7 +1157,6 @@ async def test_change_offer_parentId_3(client):
     assert response.status_code == 200
 
 
-
 @pytest.mark.asyncio
 async def test_import_new_root_1(client):
     response = await client.post(
@@ -1186,14 +1186,13 @@ async def test_update_ROOT_ID(client):
                     'type': 'CATEGORY',
                     'name': 'Товары',
                     'id': f'{ROOT_ID}',
-                    'parentId': "11111111-bbdd-47d3-ad8f-82ef4c269df1",
+                    'parentId': '11111111-bbdd-47d3-ad8f-82ef4c269df1',
                 }
             ],
             'updateDate': '2033-01-01T10:00:00Z',
         },
     )
     assert response.status_code == 200
-
 
 
 @pytest.mark.asyncio
@@ -1207,7 +1206,7 @@ async def test_change_offer_parentId_4(client):
                     'name': 'Update Readme 11',
                     'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
                     'price': 2,
-                    'parentId': "d515e43f-f3f6-4471-bb77-6b455017a2d2",
+                    'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
                 }
             ],
             'updateDate': '2034-01-01T10:00:00Z',
@@ -1234,7 +1233,7 @@ async def test_get_existing_tree_with_id_11(client):
                 'name': 'Товары',
                 'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
                 'price': 36599,
-                'parentId': "11111111-bbdd-47d3-ad8f-82ef4c269df1",
+                'parentId': '11111111-bbdd-47d3-ad8f-82ef4c269df1',
                 'date': '2034-01-01T10:00:00.000Z',
                 'children': [
                     {
@@ -1256,7 +1255,7 @@ async def test_get_existing_tree_with_id_11(client):
                             },
                             {
                                 'type': 'OFFER',
-                                'name': "Phyllis 10",
+                                'name': 'Phyllis 10',
                                 'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
                                 'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                                 'price': 10000,
@@ -1275,7 +1274,7 @@ async def test_get_existing_tree_with_id_11(client):
                         'children': [
                             {
                                 'type': 'OFFER',
-                                'name': "Update Readme 11",
+                                'name': 'Update Readme 11',
                                 'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
                                 'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
                                 'price': 2,
@@ -1316,8 +1315,11 @@ async def test_get_existing_tree_with_id_11(client):
 
 @pytest.mark.asyncio
 async def test_delete_offer_in_category_1(client):
-    response = await client.delete('/delete/98883e8f-0507-482f-bce2-2fb306cf6483')
+    response = await client.delete(
+        '/delete/98883e8f-0507-482f-bce2-2fb306cf6483'
+    )
     assert response.status_code == 200
+
 
 @pytest.mark.asyncio
 async def test_get_existing_tree_with_id_12(client):
@@ -1337,7 +1339,7 @@ async def test_get_existing_tree_with_id_12(client):
                 'name': 'Товары',
                 'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
                 'price': 37500,
-                'parentId': "11111111-bbdd-47d3-ad8f-82ef4c269df1",
+                'parentId': '11111111-bbdd-47d3-ad8f-82ef4c269df1',
                 'date': '2034-01-01T10:00:00.000Z',
                 'children': [
                     {
@@ -1350,7 +1352,7 @@ async def test_get_existing_tree_with_id_12(client):
                         'children': [
                             {
                                 'type': 'OFFER',
-                                'name': "Phyllis 10",
+                                'name': 'Phyllis 10',
                                 'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
                                 'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                                 'price': 10000,
@@ -1369,7 +1371,7 @@ async def test_get_existing_tree_with_id_12(client):
                         'children': [
                             {
                                 'type': 'OFFER',
-                                'name': "Update Readme 11",
+                                'name': 'Update Readme 11',
                                 'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
                                 'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
                                 'price': 2,
@@ -1404,13 +1406,15 @@ async def test_get_existing_tree_with_id_12(client):
     deep_sort_children(EXPECTED_TREE_3)
     print_diff(EXPECTED_TREE_3, response_json)
     assert (
-            response_json == EXPECTED_TREE_3
+        response_json == EXPECTED_TREE_3
     ), "Response tree doesn't match expected tree"
 
 
 @pytest.mark.asyncio
 async def test_delete_category_in_category_1(client):
-    response = await client.delete('/delete/d515e43f-f3f6-4471-bb77-6b455017a2d2')
+    response = await client.delete(
+        '/delete/d515e43f-f3f6-4471-bb77-6b455017a2d2'
+    )
     assert response.status_code == 200
 
 
@@ -1432,7 +1436,7 @@ async def test_get_existing_tree_with_id_13(client):
                 'name': 'Товары',
                 'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
                 'price': 10000,
-                'parentId': "11111111-bbdd-47d3-ad8f-82ef4c269df1",
+                'parentId': '11111111-bbdd-47d3-ad8f-82ef4c269df1',
                 'date': '2034-01-01T10:00:00.000Z',
                 'children': [
                     {
@@ -1445,7 +1449,7 @@ async def test_get_existing_tree_with_id_13(client):
                         'children': [
                             {
                                 'type': 'OFFER',
-                                'name': "Phyllis 10",
+                                'name': 'Phyllis 10',
                                 'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4',
                                 'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                                 'price': 10000,
@@ -1462,14 +1466,17 @@ async def test_get_existing_tree_with_id_13(client):
     deep_sort_children(EXPECTED_TREE_3)
     print_diff(EXPECTED_TREE_3, response_json)
     assert (
-            response_json == EXPECTED_TREE_3
+        response_json == EXPECTED_TREE_3
     ), "Response tree doesn't match expected tree"
 
 
 @pytest.mark.asyncio
 async def test_delete_offer_in_category_2(client):
-    response = await client.delete('/delete/74b81fda-9cdc-4b63-8927-c978afed5cf4')
+    response = await client.delete(
+        '/delete/74b81fda-9cdc-4b63-8927-c978afed5cf4'
+    )
     assert response.status_code == 200
+
 
 @pytest.mark.asyncio
 async def test_get_existing_tree_with_id_14(client):
@@ -1489,7 +1496,7 @@ async def test_get_existing_tree_with_id_14(client):
                 'name': 'Товары',
                 'id': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
                 'price': None,
-                'parentId': "11111111-bbdd-47d3-ad8f-82ef4c269df1",
+                'parentId': '11111111-bbdd-47d3-ad8f-82ef4c269df1',
                 'date': '2034-01-01T10:00:00.000Z',
                 'children': [
                     {
@@ -1499,7 +1506,7 @@ async def test_get_existing_tree_with_id_14(client):
                         'parentId': '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1',
                         'price': None,
                         'date': '2030-01-01T10:00:00.000Z',
-                        'children': []
+                        'children': [],
                     },
                 ],
             }
@@ -1509,13 +1516,17 @@ async def test_get_existing_tree_with_id_14(client):
     deep_sort_children(EXPECTED_TREE_3)
     print_diff(EXPECTED_TREE_3, response_json)
     assert (
-            response_json == EXPECTED_TREE_3
+        response_json == EXPECTED_TREE_3
     ), "Response tree doesn't match expected tree"
+
 
 @pytest.mark.asyncio
 async def test_delete_offer_in_category_3(client):
-    response = await client.delete('/delete/11111111-bbdd-47d3-ad8f-82ef4c269df1')
+    response = await client.delete(
+        '/delete/11111111-bbdd-47d3-ad8f-82ef4c269df1'
+    )
     assert response.status_code == 200
+
 
 @pytest.mark.asyncio
 async def test_get_existing_tree_with_id_15(client):

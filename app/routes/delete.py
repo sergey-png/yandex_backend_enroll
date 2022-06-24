@@ -23,5 +23,4 @@ async def delete(item_id: str) -> Optional[Dict[str, str]]:
 
     if delete_element(item_id):
         return {'id': item_id}
-    else:
-        raise HTTPException(status_code=404, detail='Item not found')
+    raise HTTPException(status_code=404, detail='Item not found')

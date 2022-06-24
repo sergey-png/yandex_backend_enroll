@@ -1,5 +1,3 @@
-from datetime import datetime
-
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -46,7 +44,7 @@ class Item(BaseModel):
         cascade='all, delete-orphan',
     )
 
-    def copy(self, with_children=False):
+    def copy(self, with_children: bool = False) -> 'Item':
         return Item(
             id=self.id,
             name=self.name,
@@ -56,16 +54,21 @@ class Item(BaseModel):
             price=self.price,
             all_price=self.all_price,
             count_items=self.count_items,
-            children=[child.copy() for child in self.children] if with_children else [],
+            children=[child.copy() for child in self.children]
+            if with_children
+            else [],
         )
 
 
 class Stats(BaseModel):
     __tablename__ = 'stats'
 
-    id = sa.Column(sa.String,
-                   sa.ForeignKey('item.id', ondelete='CASCADE'),
-                   unique=False, nullable=False)
+    id = sa.Column(
+        sa.String,
+        sa.ForeignKey('item.id', ondelete='CASCADE'),
+        unique=False,
+        nullable=False,
+    )
     name = sa.Column(sa.String, nullable=False)
     # parentId = sa.Column(sa.ForeignKey('item.id', ondelete='CASCADE'), nullable=True)
     parentId = sa.Column(sa.String, nullable=True)

@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
@@ -20,7 +20,7 @@ router = APIRouter(
 
 
 @router.get('/{item_id}', response_model=ShopUnitSchema)
-async def get_nodes(item_id: str) -> Optional[list[ShopUnitSchema]]:
+async def get_nodes(item_id: str) -> Any:
     logger.info('GET NODE WITH ID = %s', item_id)
     result = get_one_element(item_id)
     if result is None:

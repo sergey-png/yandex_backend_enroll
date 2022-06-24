@@ -580,7 +580,7 @@ async def test_import_item_without_type(client):
                 {
                     'name': 'Телевизоры',
                     'id': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
-                    'parentId': "d515e43f-f3f6-4471-bb77-6b455017a2d2",
+                    'parentId': 'd515e43f-f3f6-4471-bb77-6b455017a2d2',
                 }
             ],
             'updateDate': '2030-01-01T10:00:00Z',

@@ -1,5 +1,8 @@
+from db.models import Item
+
+
 class ShopUnitView:
-    def __init__(self, item):
+    def __init__(self, item: Item):
         self.id = item.id
         self.name = item.name
         self.date = item.date
