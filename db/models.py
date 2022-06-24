@@ -16,17 +16,6 @@ class BaseModel(Base):  # type: ignore
         primary_key=True,
         autoincrement=True,
     )
-    created_at = sa.Column(
-        sa.DateTime,
-        nullable=False,
-        default=datetime.now,
-    )
-    updated_at = sa.Column(
-        sa.DateTime,
-        nullable=False,
-        default=datetime.now,
-        onupdate=datetime.now,
-    )
 
     def __repr__(self) -> str:
         return f'<{self.__class__.__name__}(uuid={self.uuid!r})>'
@@ -50,7 +39,11 @@ class Item(BaseModel):
         'Item',
         backref=sa.orm.backref('parent', remote_side=[id]),
         cascade='all, delete-orphan',
-        passive_deletes=True,
+    )
+
+    stats = sa.orm.relationship(
+        'Stats',
+        cascade='all, delete-orphan',
     )
 
     def copy(self, with_children=False):
@@ -65,3 +58,17 @@ class Item(BaseModel):
             count_items=self.count_items,
             children=[child.copy() for child in self.children] if with_children else [],
         )
+
+
+class Stats(BaseModel):
+    __tablename__ = 'stats'
+
+    id = sa.Column(sa.String,
+                   sa.ForeignKey('item.id', ondelete='CASCADE'),
+                   unique=False, nullable=False)
+    name = sa.Column(sa.String, nullable=False)
+    # parentId = sa.Column(sa.ForeignKey('item.id', ondelete='CASCADE'), nullable=True)
+    parentId = sa.Column(sa.String, nullable=True)
+    type = sa.Column(sa.String, nullable=False)
+    price = sa.Column(sa.Integer, nullable=True)
+    date = sa.Column(sa.DateTime, nullable=False)

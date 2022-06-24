@@ -93,3 +93,16 @@ class ShopUnitImportRequestSchema(BaseModel):
         if len(result_items) != len(value):
             raise ValueError('Duplicate items')
         return value
+
+
+class ShopUnitStatisticUnitSchema(BaseModel):
+    id: str
+    name: str
+    parentId: Optional[str]
+    type: ShopUnitType
+    price: Optional[int]
+    date: datetime
+
+
+class ShopUnitStatisticResponseSchema(BaseModel):
+    items: list[ShopUnitStatisticUnitSchema]
