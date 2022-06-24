@@ -5,8 +5,9 @@ from db.models import Item
 from db.models import Stats
 from db.viewshopunit import ShopUnitView
 from collections import defaultdict
-from datetime import date
+from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -108,13 +109,21 @@ def update_statistics(session: Any, item_to_update_id: str) -> bool:
     session.commit()
     item_to_update = session.query(Item).filter(Item.id == item_to_update_id).first()
     if item_to_update:
+        items = session.query(Stats).filter(Stats.id == item_to_update_id).all()
+        if items:
+            for item in items:
+                session.query(Stats).filter(Stats.uuid == item.uuid).update({Stats.last_date: None})
+            session.commit()
+        # date_in_datetime = datetime.fromisoformat(item_to_update.date.replace('Z', '+00:00'))
+        date_in_datetime = item_to_update.date
         if item_to_update.type == "OFFER":
             session.add(Stats(id=item_to_update.id,
                               name=item_to_update.name,
                               parentId=item_to_update.parentId,
                               type=item_to_update.type,
                               price=item_to_update.price,
-                              date=item_to_update.date,
+                              date=date_in_datetime,
+                              last_date=date_in_datetime,
                               ))
         elif item_to_update.type == "CATEGORY":
             if session.query(Stats).filter(Stats.id == item_to_update.id,
@@ -126,7 +135,8 @@ def update_statistics(session: Any, item_to_update_id: str) -> bool:
                                   parentId=item_to_update.parentId,
                                   type=item_to_update.type,
                                   price=item_to_update.price,
-                                  date=item_to_update.date,
+                                  date=date_in_datetime,
+                                  last_date=date_in_datetime,
                                   ))
     return True
 
@@ -500,15 +510,19 @@ def update_all_parents_1(session: Any, item_to_add: Item, data: dict[str, Any]) 
             return True
 
 
-def get_sales_from(item_date: date) -> list[Item]:
+def get_sales_from(item_date: datetime) -> list[Stats]:
     with create_session() as session:
         # date - 24 Hours
         date_from = item_date - timedelta(hours=24)
+        # date_from to string
+        date_from_str = date_from.strftime('%Y-%m-%dT%H:%M:%S')
+        item_date_str = item_date.strftime('%Y-%m-%dT%H:%M:%S')
         logger.info('Getting sales from %s', date_from)
         logger.info('Getting sales to %s', item_date)
-        items = session.query(Item).filter(Item.date >= date_from,
-                                           Item.date <= item_date,
-                                           Item.type == "OFFER").all()
+        items = session.query(Stats).filter(Stats.last_date is not None,
+                                            Stats.last_date >= date_from_str,
+                                            Stats.last_date <= item_date_str,
+                                            Stats.type == "OFFER").all()
         logger.info('Got %s sales with items = %s', len(items), items)
         result_list = []
         for item in items:
@@ -518,7 +532,7 @@ def get_sales_from(item_date: date) -> list[Item]:
                 parentId=item.parentId,
                 type=item.type,
                 price=item.price,
-                date=item.date.isoformat().replace('+00:00', '.000Z'),
+                date=item.last_date.isoformat()+'.000Z',
             ))
         logger.info('Got %s sales with items = %s', len(result_list), result_list)
         return result_list

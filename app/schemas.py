@@ -101,7 +101,7 @@ class ShopUnitStatisticUnitSchema(BaseModel):
     parentId: Optional[str]
     type: ShopUnitType
     price: Optional[int]
-    date: datetime
+    date: str
 
 
 class ShopUnitStatisticResponseSchema(BaseModel):

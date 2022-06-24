@@ -24,12 +24,13 @@ router = APIRouter(
 @router.get('', response_model=ShopUnitStatisticResponseSchema)
 async def get_sales(date: str) -> ShopUnitStatisticResponseSchema:
     date = validate_date(date)
+    logger.info("date is %s", date)
     if date is None:
         raise HTTPException(status_code=400, detail='Validation Failed')
     return {'items': get_sales_from(date)}
 
 
-def validate_date(value: str) -> bool:
+def validate_date(value: str) -> Optional[datetime]:
     try:
         res_value = datetime.fromisoformat(value.replace('Z', '+00:00'))
         # res_value = dt_str.isoformat().replace('+00:00', '.000Z')

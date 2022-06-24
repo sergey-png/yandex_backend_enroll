@@ -72,3 +72,4 @@ class Stats(BaseModel):
     type = sa.Column(sa.String, nullable=False)
     price = sa.Column(sa.Integer, nullable=True)
     date = sa.Column(sa.DateTime, nullable=False)
+    last_date = sa.Column(sa.DateTime, nullable=True)
