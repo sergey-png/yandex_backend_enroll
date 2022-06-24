@@ -542,3 +542,29 @@ def get_sales_from(item_date: datetime) -> list[Stats]:
             ))
         logger.info('Got %s sales with items = %s', len(result_list), result_list)
         return result_list
+
+
+def get_statistic_from(item_id: str, dateStart: datetime, dateEnd: datetime) -> list[Stats]:
+    with create_session() as session:
+        if not session.query(Item).filter(Item.id == item_id).first():
+            return None
+        dateStart = dateStart.strftime('%Y-%m-%dT%H:%M:%S')
+        dateEnd = dateEnd.strftime('%Y-%m-%dT%H:%M:%S')
+        logger.info('Getting statistic from %s', dateStart)
+        logger.info('Getting statistic to %s', dateEnd)
+        items = session.query(Stats).filter(Stats.id == item_id,
+                                            Stats.date >= dateStart,
+                                            Stats.date < dateEnd).all()
+        logger.info('Got %s statistic with items = %s', len(items), items)
+        result_list = []
+        for item in items:
+            result_list.append(dict(
+                id=item.id,
+                name=item.name,
+                parentId=item.parentId,
+                type=item.type,
+                price=item.price,
+                date=item.date.isoformat()+'.000Z',
+            ))
+        logger.info('Got %s statistic with items = %s', len(result_list), result_list)
+        return result_list

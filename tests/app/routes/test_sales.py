@@ -210,7 +210,8 @@ async def test_get_sales_with_date_1(client):
         f'expected: 200'
     )
 
-    EXPECTED_SALES_1 = {'items': [{'id': '98883e8f-0507-482f-bce2-2fb306cf6483', 'name': 'Samson 70" LED UHD Smart',
+    EXPECTED_SALES_1 = {'items': [
+                                  {'id': '98883e8f-0507-482f-bce2-2fb306cf6483', 'name': 'Samson 70" LED UHD Smart',
                                    'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2', 'type': 'OFFER', 'price': 32999,
                                    'date': '2022-02-03T12:00:00.000Z'},
                                   {'id': '74b81fda-9cdc-4b63-8927-c978afed5cf4', 'name': 'Phyllis 50" LED UHD Smarter',
@@ -220,7 +221,8 @@ async def test_get_sales_with_date_1(client):
                                    'name': 'Goldstar 65" LED UHD LOL Very Smart',
                                    'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                                    'type': 'OFFER', 'price': 69999,
-                                   'date': '2022-02-03T15:00:00.000Z'}]}
+                                   'date': '2022-02-03T15:00:00.000Z'},
+    ]}
     logging.info(response.json())
     assert response.json() == EXPECTED_SALES_1, f"{response.json()} != {EXPECTED_SALES_1}"
 
@@ -259,12 +261,3 @@ async def test_get_sales_with_date_3(client):
         f'expected: 200'
     )
     assert response.json() == EXPECTED_SALES_1, f"{response.json()} != {EXPECTED_SALES_1}"
-
-
-# @pytest.mark.asyncio
-# async def test_delete_root_with_Id_2(client):
-#     response = await client.delete(
-#         f'delete/{ROOT_ID}',
-#     )
-#     assert response.status_code == 200
-#     assert response.json() == {'id': ROOT_ID}
