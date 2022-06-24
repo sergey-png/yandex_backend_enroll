@@ -68,6 +68,13 @@ IMPORT_BATCHES = [
                 'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
                 'price': 49999,
             },
+            {
+                'type': 'OFFER',
+                'name': "Goldstar 65\" LED UHD LOL Very Smart",
+                'id': '73bc3b36-02d1-4245-ab35-3106c9ee1c65',
+                'parentId': '1cc0129a-2bfe-474c-9ee6-d435bf5fc8f2',
+                'price': 1000000,
+            }
         ],
         'updateDate': '2022-02-03T12:00:00.000Z',
     },

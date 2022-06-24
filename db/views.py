@@ -109,34 +109,40 @@ def update_statistics(session: Any, item_to_update_id: str) -> bool:
     session.commit()
     item_to_update = session.query(Item).filter(Item.id == item_to_update_id).first()
     if item_to_update:
-        items = session.query(Stats).filter(Stats.id == item_to_update_id).all()
+        items = session.query(Stats).filter(Stats.id == item_to_update_id, Stats.date != item_to_update.date).all()
         if items:
             for item in items:
                 session.query(Stats).filter(Stats.uuid == item.uuid).update({Stats.last_date: None})
             session.commit()
         # date_in_datetime = datetime.fromisoformat(item_to_update.date.replace('Z', '+00:00'))
-        date_in_datetime = item_to_update.date
         if item_to_update.type == "OFFER":
             session.add(Stats(id=item_to_update.id,
                               name=item_to_update.name,
                               parentId=item_to_update.parentId,
                               type=item_to_update.type,
                               price=item_to_update.price,
-                              date=date_in_datetime,
-                              last_date=date_in_datetime,
+                              date=item_to_update.date,
+                              last_date=item_to_update.date,
                               ))
         elif item_to_update.type == "CATEGORY":
-            if session.query(Stats).filter(Stats.id == item_to_update.id,
-                                           Stats.date == item_to_update.date).first():
-                return True
+            check = session.query(Stats).filter(Stats.id == item_to_update.id, Stats.date == item_to_update.date).first()
+            if check:
+                check.price = item_to_update.price
+                check.name = item_to_update.name
+                check.parentId = item_to_update.parentId
+                session.query(Stats).filter(Stats.uuid == check.uuid).update({
+                    Stats.price: check.price,
+                    Stats.name: check.name,
+                    Stats.parentId: check.parentId,
+                })
             else:
                 session.add(Stats(id=item_to_update.id,
                                   name=item_to_update.name,
                                   parentId=item_to_update.parentId,
                                   type=item_to_update.type,
                                   price=item_to_update.price,
-                                  date=date_in_datetime,
-                                  last_date=date_in_datetime,
+                                  date=item_to_update.date,
+                                  last_date=item_to_update.date,
                                   ))
     return True
 
