@@ -9,6 +9,6 @@ from app.__main__ import app
 @pytest.mark.asyncio
 async def client():
     async with AsyncClient(
-        app=app, base_url='http://localhost:8000/'
+        app=app, base_url='http://0.0.0.0:80/'
     ) as client:
         yield client
