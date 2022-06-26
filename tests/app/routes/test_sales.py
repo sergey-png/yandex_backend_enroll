@@ -1,11 +1,10 @@
 # encoding=utf8
 import logging
-
+from tests.conftest import API_BASEURL
 import pytest
 
 logging.getLogger(__name__)
 
-API_BASEURL = 'http://0.0.0.0:80'
 ROOT_ID = '069cb8d7-bbdd-47d3-ad8f-82ef4c269df1'
 IMPORT_BATCHES = [
     {
