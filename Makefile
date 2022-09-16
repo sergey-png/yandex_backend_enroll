@@ -93,4 +93,4 @@ docker-clean: ## Docker prune -f
 	docker image prune -f
 
 .PHONY: docker
-docker: docker-clean docker-build docker-up docker-clean ## Docker prune, up, run and prune
+docker: docker-clean docker-build docker-up-d docker-clean ## Docker prune, up, run and prune

@@ -4,7 +4,8 @@ from httpx import AsyncClient
 
 from app.__main__ import app
 
-API_BASEURL = 'https://legs-1839.usr.yandex-academy.ru'
+API_BASEURL = 'http://localhost:8000'
+
 
 @pytest_asyncio.fixture
 @pytest.mark.asyncio
